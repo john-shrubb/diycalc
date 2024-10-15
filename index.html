@@ -214,7 +214,8 @@
 		<div class="field">
 			<h3>Operation</h3>
 			<div id="dropdown">
-				<p>Select Operation <span class="icon material-symbols-outlined">arrow_drop_down</span></p>
+				<p style="display: inline-block;">Select Operation</p>
+				<span class="icon material-symbols-outlined" style="display: inline-block; float: right;">arrow_drop_down</span>
 				<div class="items">
 					<span>+</span>
 					<span>-</span>
@@ -247,6 +248,16 @@
 					dropdown.getElementsByClassName('items')[0].style.display = 'flex';
 				}
 			});
+
+			const spans = Array.from(dropdown.getElementsByClassName('items')[0].children);
+
+			for (let span of spans) {
+				span.addEventListener('click', function() {
+					currentlySelected = span.innerText;
+
+					dropdown.getElementsByTagName('p')[0].innerText = currentlySelected;
+				});
+			}
 		})()
 	</script>
 </body>
