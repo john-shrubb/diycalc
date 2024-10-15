@@ -235,8 +235,15 @@
 
 	<script>
 		(function() {
+			const num1 = document.getElementById('num1');
+			const num2 = document.getElementById('num2');
+
+			// Handle dropdown functionality
+
 			const dropdown = document.getElementById('dropdown');
 			
+			// Currently selected operation
+
 			let currentlySelected;
 
 			dropdown.addEventListener('click', function() {
@@ -258,6 +265,59 @@
 					dropdown.getElementsByTagName('p')[0].innerText = currentlySelected;
 				});
 			}
+
+			// Handle Calculate button submission
+			const submitButton = document.getElementsByClassName('submit')[0];
+
+			submitButton.addEventListener('click', function() {
+				// If the user doesn't select an operation before submitting.
+				if (!currentlySelected) return;
+
+				const number1 = parseFloat(num1.value);
+				const number2 = parseFloat(num2.value);
+
+				if (isNaN(number1)) return alert('Invalid number 1!');
+				if (isNaN(number2)) return alert('Invalid number 2!');
+
+				if (number2 === 0 && currentlySelected === '/') {
+					return alert('You can\'t divide by zero!');
+				}
+
+				let userAnswer =
+					prompt(`Completely unrelated maths question to the one you just asked!\nWhat is ${number1} ${currentlySelected} ${number2}?`);
+				
+				if (!userAnswer || !userAnswer.trim()) {
+					return alert('Do it yourself you lazy bum!');
+				}
+
+				userAnswer = parseFloat(userAnswer)
+
+				let correctAnswer;
+
+				// Otherwise, calculate the correct answer and prompt the user to do the calculation for us :)
+				switch(currentlySelected) {
+					case '+':
+						correctAnswer = number1 + number2;
+						break;
+					case '-':
+						correctAnswer = number1 - number2;
+						break;
+					case '*':
+						correctAnswer = number1 * number2;
+						break;
+					case '/':
+						correctAnswer = number1 / number2;
+						break;
+					default:
+						console.log('Unrecognised operator ' + currentlySelected);
+				}
+
+				if (!isNaN(userAnswer) && userAnswer === correctAnswer) {
+					alert('You got it!');
+				} else {
+					alert('Incorrect!');
+				}
+			});
 		})()
 	</script>
 </body>
