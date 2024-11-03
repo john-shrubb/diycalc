@@ -266,7 +266,7 @@
 			font-size: 10pt;
 		}
 
-		button.plusbutton {
+		button.plusbutton, button.minusbutton {
 			font-size: 17pt;
 			font-family: 'Poppins';
 			padding: 5px;
@@ -274,17 +274,29 @@
 			height: 40px;
 			border-radius: 10px;
 		}
+
+		@media only screen and (max-width: 1000px) {
+			.calculation-fields {
+				flex-direction: column !important;
+				align-items: center;
+				row-gap: 50px;
+				margin-bottom: 50px;
+			}
+		}
 	</style>
 </head>
 <body>
 	<div class="blur">
 		<div class="answer-popup">
 			<h3>Enter Answer</h3>
-			<p>Use the counter below to enter the answer.<br>Round to the nearest whole number, and treat a negative answer like a positive one.</p>
+			<p>Use the counter below to enter the answer.<br>Round to the nearest whole number.</p>
 	
 			<div class="answer-selector">
 				<span class="answer-counter">0</span>
-				<button class="plusbutton">+</button>
+				<div class="numberselectbuttons">
+					<button class="plusbutton">+</button>
+					<button class="minusbutton">-</button>
+				</div>
 			</div>
 
 			<button class="submitanswer">Submit</button>
@@ -382,7 +394,7 @@
 				enterAnswerField.style.display = 'flex';
 			});
 
-			// Handle it when the user attempts to increment the number value.
+			// Handle it when the user attempts to increment or decrement the number value.
 			let currentValue = 0;
 			const plusButton = document.getElementsByClassName('plusbutton')[0];
 
@@ -391,6 +403,14 @@
 
 			plusButton.addEventListener('click', function() {
 				currentValue++;
+
+				answerCounter.innerText = currentValue;
+			});
+
+			const minusbutton = document.getElementsByClassName('minusbutton')[0];
+
+			minusbutton.addEventListener('click', function() {
+				currentValue--;
 
 				answerCounter.innerText = currentValue;
 			});
@@ -418,7 +438,7 @@
 						break;
 				}
 
-				correctAnswer = Math.abs(Math.round(correctAnswer));
+				correctAnswer = Math.round(correctAnswer);
 
 				if (correctAnswer == currentValue) {
 					alert('Correct!');
