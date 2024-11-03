@@ -50,11 +50,15 @@
 			Generic
 		*/
 
-		html, body {
+		html, body, .container {
 			min-width: 100%;
 			min-height: 100vh;
 			background-color: var(--background);
 			color: white;
+		}
+
+		.container {
+			position: relative;
 		}
 
 		/*
@@ -165,7 +169,6 @@
 		}
 
 		#dropdown .items {
-			position: relative;
 			display: none;
 			flex-direction: column;
 		}
@@ -189,7 +192,7 @@
 			flex-direction: row;
 			justify-content: center;
 		}
-		button.submit {
+		button {
 			font-family: 'JetBrains Mono', monospace;
 			padding: 13px;
 			border-radius: 5px;
@@ -198,39 +201,127 @@
 			background: var(--primary);
 			color: white;
 		}
+
+		button:hover {
+			background: var(--secondary);
+			transition-duration: 200ms;
+		}
+
+		button:active {
+			background: var(--primary-active);
+		}
+
+		/*
+			The popup that appears when you press submit
+		*/
+
+		div.blur {
+			width: 100%;
+			height: 100vh;
+			position: absolute;
+			background: #0a0300ad;
+			backdrop-filter: blur(10px);
+			display: none;
+			justify-content: center;
+			align-items: center;
+			z-index: 1;
+		}
+
+		div.answer-popup {
+			display: flex;
+			flex-direction: column;
+			padding: 50px;
+			border-radius: 20px;
+			background: var(--box-bg);
+			box-sizing: border-box;
+			row-gap: 10px;
+		}
+		div.answer-selector {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+		}
+
+		div.answer-popup h3 {
+			font-family: 'JetBrains Mono', Verdana, Geneva, Tahoma, sans-serif;
+			color: var(--primary);
+			font-size: 20pt;
+			font-weight: bolder;
+		}
+
+		div.answer-popup p {
+			font-family: 'Open Sans';
+			font-size: 14pt;
+		}
+
+		div.answer-popup span {
+			font-family: 'Poppins', Verdana, Geneva, Tahoma, sans-serif;
+			font-size: 17pt;
+		}
+
+		/* Specific styling for these buttons */
+
+		button.submitanswer {
+			width: fit-content;
+			font-size: 10pt;
+		}
+
+		button.plusbutton {
+			font-size: 17pt;
+			font-family: 'Poppins';
+			padding: 5px;
+			width: 40px;
+			height: 40px;
+			border-radius: 10px;
+		}
 	</style>
 </head>
 <body>
-	<div class="main-explainer">
-		<h3><a href="https://johnshrubb.dev/">johnshrubb.dev</a></h3>
-		<h1>DIY Calculator</h1>
-		<h2>Do maths - And learn at the same time!</h2>
-	</div>
-	<div class="calculation-fields">
-		<div class="field">
-			<h3>Number 1</h3>
-			<input type="text" name="number1" id="num1" placeholder="123">
+	<div class="blur">
+		<div class="answer-popup">
+			<h3>Enter Answer</h3>
+			<p>Use the counter below to enter the answer.<br>Round to the nearest whole number, and treat a negative answer like a positive one.</p>
+	
+			<div class="answer-selector">
+				<span class="answer-counter">0</span>
+				<button class="plusbutton">+</button>
+			</div>
+
+			<button class="submitanswer">Submit</button>
 		</div>
-		<div class="field">
-			<h3>Operation</h3>
-			<div id="dropdown">
-				<p style="display: inline-block;">Select Operation</p>
-				<span class="icon material-symbols-outlined" style="display: inline-block; float: right;">arrow_drop_down</span>
-				<div class="items">
-					<span>+</span>
-					<span>-</span>
-					<span>*</span>
-					<span>/</span>
+	</div>
+	<div class="container">
+		<div class="main-explainer">
+			<h3><a href="https://johnshrubb.dev/">johnshrubb.dev</a></h3>
+			<h1>DIY Calculator</h1>
+			<h2>Do maths - And learn at the same time!</h2>
+		</div>
+		<div class="calculation-fields">
+			<div class="field">
+				<h3>Number 1</h3>
+				<input type="text" name="number1" id="num1" placeholder="123">
+			</div>
+			<div class="field">
+				<h3>Operation</h3>
+				<div id="dropdown">
+					<p style="display: inline-block;">Select Operation</p>
+					<span class="icon material-symbols-outlined" style="display: inline-block; float: right;">arrow_drop_down</span>
+					<div class="items">
+						<span>+</span>
+						<span>-</span>
+						<span>*</span>
+						<span>/</span>
+					</div>
 				</div>
 			</div>
+			<div class="field">
+				<h3>Number 2</h3>
+				<input type="text" name="number2" id="num2" placeholder="456">
+			</div>
 		</div>
-		<div class="field">
-			<h3>Number 2</h3>
-			<input type="text" name="number2" id="num2" placeholder="456">
+		<div class="submit-button">
+			<button class="submit">Calculate</button>
 		</div>
-	</div>
-	<div class="submit-button">
-		<button class="submit">Calculate</button>
 	</div>
 
 	<script>
@@ -268,13 +359,17 @@
 
 			// Handle Calculate button submission
 			const submitButton = document.getElementsByClassName('submit')[0];
+			let number1;
+			let number2;
+
+			const enterAnswerField = document.getElementsByClassName('blur')[0];
 
 			submitButton.addEventListener('click', function() {
 				// If the user doesn't select an operation before submitting.
 				if (!currentlySelected) return;
 
-				const number1 = parseFloat(num1.value);
-				const number2 = parseFloat(num2.value);
+				number1 = parseFloat(num1.value);
+				number2 = parseFloat(num2.value);
 
 				if (isNaN(number1)) return alert('Invalid number 1!');
 				if (isNaN(number2)) return alert('Invalid number 2!');
@@ -283,19 +378,32 @@
 					return alert('You can\'t divide by zero!');
 				}
 
-				let userAnswer =
-					prompt(`Completely unrelated maths question to the one you just asked!\nWhat is ${number1} ${currentlySelected} ${number2}?`);
-				
-				if (!userAnswer || !userAnswer.trim()) {
-					return alert('Do it yourself you lazy bum!');
-				}
+				// Make the answer popup show.
+				enterAnswerField.style.display = 'flex';
+			});
 
-				userAnswer = parseFloat(userAnswer)
+			// Handle it when the user attempts to increment the number value.
+			let currentValue = 0;
+			const plusButton = document.getElementsByClassName('plusbutton')[0];
 
-				let correctAnswer;
+			// The span showing the current number.
+			const answerCounter = document.getElementsByClassName('answer-counter')[0];
 
-				// Otherwise, calculate the correct answer and prompt the user to do the calculation for us :)
-				switch(currentlySelected) {
+			plusButton.addEventListener('click', function() {
+				currentValue++;
+
+				answerCounter.innerText = currentValue;
+			});
+
+			// Handle the submission of what the user thinks is the correct answer.
+			const submitAnswerButton = document.getElementsByClassName('submitanswer')[0];
+
+			submitAnswerButton.addEventListener('click', function() {
+				correctAnswer = 0;
+
+				const operation = dropdown.getElementsByTagName('p')[0].innerText;
+
+				switch(operation) {
 					case '+':
 						correctAnswer = number1 + number2;
 						break;
@@ -308,15 +416,19 @@
 					case '/':
 						correctAnswer = number1 / number2;
 						break;
-					default:
-						console.log('Unrecognised operator ' + currentlySelected);
 				}
 
-				if (!isNaN(userAnswer) && userAnswer === correctAnswer) {
-					alert('You got it!');
+				correctAnswer = Math.abs(Math.round(correctAnswer));
+
+				if (correctAnswer == currentValue) {
+					alert('Correct!');
 				} else {
-					alert('Incorrect!');
+					alert('Incorrect.');
 				}
+
+				currentValue = 0;
+				answerCounter.innerText = '0';
+				enterAnswerField.style.display = 'none';
 			});
 		})()
 	</script>
